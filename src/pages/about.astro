@@ -1,0 +1,83 @@
+---
+import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
+import { Image } from 'astro:assets';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={`关于 | ${SITE_TITLE}`} description="这是我的 Astro 练手博客" />
+	</head>
+	<body>
+		<Header />
+		<main class="about">
+			<header class="page-header">
+				<p class="eyebrow">关于</p>
+				<h1>关于我</h1>
+			</header>
+
+			<div class="hero-image">
+				<Image src={AboutHeroImage} alt="关于我" />
+			</div>
+
+			<div class="prose">
+				<p>
+					你好！这是我的第一个 Astro 博客项目。我正在学习如何使用 Astro + Markdown 搭建一个静态博客网站。
+				</p>
+
+				<p>这个博客使用以下技术栈：</p>
+
+				<ul>
+					<li><strong>Astro</strong> - 静态站点生成器</li>
+					<li><strong>Markdown</strong> - 文章内容格式</li>
+					<li><strong>Tailwind CSS</strong> - 样式框架</li>
+				</ul>
+
+				<p>
+					我会在这里记录学习笔记、技术心得和一些生活随笔。欢迎常来看看！
+				</p>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		text-align: center;
+		margin-bottom: 2.5rem;
+	}
+
+	.eyebrow {
+		font-size: 0.85rem;
+		font-weight: 500;
+		color: var(--accent);
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		margin: 0 0 0.75rem 0;
+	}
+
+	.page-header h1 {
+		font-size: 2.75rem;
+		margin-bottom: 0;
+	}
+
+	.hero-image {
+		margin-bottom: 2.5rem;
+	}
+
+	.hero-image img {
+		width: 100%;
+		border-radius: var(--radius-md);
+	}
+
+	@media (max-width: 720px) {
+		.page-header h1 {
+			font-size: 2rem;
+		}
+	}
+</style>

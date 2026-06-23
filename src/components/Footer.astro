@@ -1,0 +1,47 @@
+---
+import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+const today = new Date();
+---
+
+<footer>
+	<div class="footer-content">
+		<p class="site-name">{SITE_TITLE}</p>
+		<p class="copyright">&copy; {today.getFullYear()} {SITE_AUTHOR}. 保留所有权利.</p>
+	</div>
+</footer>
+
+<style>
+	footer {
+		width: 100%;
+		padding: 3rem 1.5rem;
+		background: var(--bg-secondary);
+		border-top: 1px solid var(--border);
+		margin-top: auto;
+	}
+
+	.footer-content {
+		max-width: 720px;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.site-name {
+		font-family: var(--font-serif);
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0 0 0.5rem 0;
+	}
+
+	.copyright {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	@media (max-width: 720px) {
+		footer {
+			padding: 2rem 1rem;
+		}
+	}
+</style>
