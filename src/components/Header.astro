@@ -19,28 +19,29 @@ import HeaderLink from './HeaderLink.astro';
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		padding: 1rem 1.5rem;
-		background: rgba(15, 15, 16, 0.75);
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+		padding: 0 1.5rem;
+		background: rgba(255, 255, 255, 0.72);
+		backdrop-filter: saturate(180%) blur(20px);
+		-webkit-backdrop-filter: saturate(180%) blur(20px);
+		border-bottom: 1px solid var(--border);
 	}
 
 	nav {
-		max-width: 720px;
+		max-width: 780px;
 		margin: 0 auto;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		height: 52px;
 		gap: 1.5rem;
 	}
 
 	.site-title {
-		font-family: var(--font-serif);
-		font-size: 1.25rem;
-		font-weight: 700;
+		font-family: var(--font-sans);
+		font-size: 1.125rem;
+		font-weight: 600;
 		color: var(--text-primary);
-		letter-spacing: -0.02em;
+		letter-spacing: -0.01em;
 	}
 
 	.site-title:hover {
@@ -49,21 +50,23 @@ import HeaderLink from './HeaderLink.astro';
 
 	.nav-links {
 		display: flex;
-		gap: 1.5rem;
+		gap: 1.75rem;
 	}
 
 	@media (max-width: 720px) {
 		header {
-			padding: 1rem;
+			padding: 0 1rem;
 		}
 
 		nav {
 			flex-direction: column;
-			gap: 0.75rem;
+			gap: 0.5rem;
+			height: auto;
+			padding: 0.75rem 0;
 		}
 
 		.nav-links {
-			gap: 1rem;
+			gap: 1.25rem;
 		}
 	}
 </style>
