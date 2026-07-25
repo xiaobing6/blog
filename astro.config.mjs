@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://localhost:4321',
+  site: process.env.SITE_URL || 'https://xiaobing6-blog.pages.dev',
   integrations: [mdx(), sitemap()],
 
   fonts: [
