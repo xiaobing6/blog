@@ -1,14 +1,10 @@
 ---
-const token = import.meta.env.PUBLIC_CF_WEB_ANALYTICS_TOKEN;
+const defaultToken = '9783a293e0d44a4f8e70165a981da25f';
+const token = import.meta.env.PUBLIC_CF_WEB_ANALYTICS_TOKEN || defaultToken;
 ---
 
-{
-	token && (
-		<script
-			is:inline
-			defer
-			src="https://static.cloudflareinsights.com/beacon.min.js"
-			data-cf-beacon={JSON.stringify({ token })}
-		/>
-	)
-}
+<script
+	is:inline
+	type="module"
+	src="https://static.cloudflareinsights.com/beacon.min.js"
+	data-cf-beacon={JSON.stringify({ token })}></script>

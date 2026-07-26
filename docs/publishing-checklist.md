@@ -28,4 +28,4 @@
 5. 检查 RSS、Sitemap、robots.txt 和 404 页面
 6. 部署后抽查首页、项目页、文章页和分享卡片
 
-Cloudflare Web Analytics 需要时，在部署环境配置 `PUBLIC_CF_WEB_ANALYTICS_TOKEN`；未配置时不会加载统计脚本。
+Cloudflare Web Analytics 已配置默认 Beacon Token；如需轮换，可在部署环境使用 `PUBLIC_CF_WEB_ANALYTICS_TOKEN` 覆盖。

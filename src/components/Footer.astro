@@ -10,6 +10,7 @@ const today = new Date();
 		<div>
 			<p class="site-name">{SITE_TITLE}</p>
 			<p class="site-description">{SITE_DESCRIPTION}</p>
+			<p class="analytics-note">使用 Cloudflare Web Analytics 了解聚合访问趋势。</p>
 		</div>
 		<SocialLinks compact />
 		<p class="copyright">&copy; {today.getFullYear()} {SITE_AUTHOR}</p>
@@ -47,6 +48,12 @@ const today = new Date();
 		color: var(--text-secondary);
 		font-size: 0.84rem;
 		line-height: 1.55;
+	}
+
+	.analytics-note {
+		margin: 0.35rem 0 0;
+		color: var(--text-muted);
+		font-size: 0.72rem;
 	}
 
 	.copyright {
