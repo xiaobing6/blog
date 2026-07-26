@@ -1,0 +1,94 @@
+---
+import ProjectCard from '../../components/ProjectCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { PROJECTS } from '../../data/projects';
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+
+<PageLayout
+	title={'项目 | ' + SITE_TITLE}
+	description="张迎明公开的个人项目与工程实践，包含角色、技术栈、成果和可验证链接。"
+	wide
+	mainClass="projects-page"
+>
+	<header class="page-intro">
+		<div>
+			<p class="eyebrow">PROJECTS / VERIFIABLE WORK</p>
+			<h1>项目不是清单，是能力的证据。</h1>
+		</div>
+		<p>
+			这里仅收录已经存在、可以访问或查看源码的项目。每个项目说明我承担的角色、使用的技术和当前成果。
+		</p>
+	</header>
+
+	<div class="project-list">
+		{PROJECTS.map((project) => <ProjectCard project={project} />)}
+	</div>
+
+	<section class="project-note surface">
+		<span class="note-index">NOTE / 001</span>
+		<div>
+			<h2>项目页会随实践持续生长</h2>
+			<p>
+				当前公开项目是这个博客本身。后续只有在有真实链接、源码或文章复盘时，才会加入新的项目条目。
+			</p>
+		</div>
+	</section>
+</PageLayout>
+
+<style>
+	.page-intro {
+		display: grid;
+		grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+		align-items: end;
+		gap: clamp(2rem, 7vw, 6rem);
+		margin-bottom: 3rem;
+	}
+
+	.page-intro h1 {
+		max-width: 760px;
+	}
+
+	.page-intro > p {
+		margin-bottom: 0.6rem;
+		color: var(--text-secondary);
+		line-height: 1.7;
+	}
+
+	.project-list {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.project-note {
+		display: grid;
+		grid-template-columns: 120px 1fr;
+		gap: 1.5rem;
+		margin-top: 1rem;
+		padding: 1.4rem;
+	}
+
+	.note-index {
+		color: var(--accent);
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+	}
+
+	.project-note h2 {
+		margin-bottom: 0.4rem;
+		font-size: 1.15rem;
+	}
+
+	.project-note p {
+		margin: 0;
+		color: var(--text-secondary);
+		font-size: 0.88rem;
+	}
+
+	@media (max-width: 760px) {
+		.page-intro,
+		.project-note {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

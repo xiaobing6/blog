@@ -1,47 +1,68 @@
 ---
-import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import SocialLinks from './SocialLinks.astro';
+
 const today = new Date();
 ---
 
-<footer>
-	<div class="footer-content">
-		<p class="site-name">{SITE_TITLE}</p>
-		<p class="copyright">&copy; {today.getFullYear()} {SITE_AUTHOR}. 保留所有权利.</p>
+<footer class="site-footer">
+	<div class="footer-shell">
+		<div>
+			<p class="site-name">{SITE_TITLE}</p>
+			<p class="site-description">{SITE_DESCRIPTION}</p>
+		</div>
+		<SocialLinks compact />
+		<p class="copyright">&copy; {today.getFullYear()} {SITE_AUTHOR}</p>
 	</div>
 </footer>
 
 <style>
-	footer {
+	.site-footer {
 		width: 100%;
-		padding: 2.5rem 1.5rem;
-		background: var(--bg-secondary);
-		border-top: 1px solid var(--border);
+		padding: 2.5rem 1.25rem;
 		margin-top: auto;
+		border-top: 1px solid var(--border);
+		background: var(--bg-secondary);
 	}
 
-	.footer-content {
-		max-width: 780px;
+	.footer-shell {
+		width: min(1120px, 100%);
 		margin: 0 auto;
-		text-align: center;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: end;
+		gap: 1rem 2rem;
 	}
 
 	.site-name {
-		font-family: var(--font-sans);
-		font-size: 1rem;
-		font-weight: 600;
+		margin: 0 0 0.35rem;
 		color: var(--text-primary);
-		margin: 0 0 0.5rem 0;
+		font-size: 0.95rem;
+		font-weight: 650;
+	}
+
+	.site-description {
+		max-width: 540px;
+		margin: 0;
+		color: var(--text-secondary);
+		font-size: 0.84rem;
+		line-height: 1.55;
 	}
 
 	.copyright {
-		font-size: 0.8125rem;
-		color: var(--text-muted);
+		grid-column: 1 / -1;
 		margin: 0;
+		padding-top: 1rem;
+		border-top: 1px solid var(--border);
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
 	}
 
-	@media (max-width: 720px) {
-		footer {
-			padding: 2rem 1rem;
+	@media (max-width: 640px) {
+		.footer-shell {
+			grid-template-columns: 1fr;
+			align-items: start;
 		}
 	}
 </style>

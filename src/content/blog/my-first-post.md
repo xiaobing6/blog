@@ -2,8 +2,11 @@
 title: '我的第一篇 Astro 博客'
 description: '记录用 Astro 搭建博客的学习过程'
 pubDate: 'Jun 23 2026'
+updatedDate: 'Jul 26 2026'
 heroImage: '../../assets/blog-placeholder-1.jpg'
 tags: ['astro', 'markdown', 'learning']
+category: 'Astro'
+featured: true
 ---
 
 这是我用 Astro + Markdown 搭建的第一个博客。整个搭建过程比我想象中要简单很多。
@@ -21,14 +24,17 @@ Astro 非常适合内容型网站，比如博客、文档站。它的优势包�
 
 - Astro 7
 - Tailwind CSS 4
-- Markdown 文章
+- Markdown / MDX
+- Cloudflare Pages
+- Pagefind
 
-## 下一步计划
+## 当前状态
 
-接下来我想尝试：
+目前这个站点已经完成：
 
-1. 添加标签分类功能
-2. 优化移动端样式
-3. 部署到 Vercel
+1. 文章标签、分类与时间归档
+2. 响应式布局、亮暗主题和文章目录
+3. 静态全文搜索、RSS 与 Sitemap
+4. 部署到 Cloudflare Pages
 
-希望这个博客能坚持下去！
+接下来我会继续把真实的学习过程和项目复盘整理到这里。

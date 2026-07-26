@@ -1,0 +1,36 @@
+---
+import type { BlogPost } from '../utils/posts';
+import PostCard from './PostCard.astro';
+
+interface Props {
+	posts: BlogPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+	posts.length > 0 && (
+		<section class="related" aria-labelledby="related-heading">
+			<p class="eyebrow">KEEP READING</p>
+			<h2 id="related-heading">相关文章</h2>
+			<div>
+				{posts.map((post) => (
+					<PostCard post={post} compact />
+				))}
+			</div>
+		</section>
+	)
+}
+
+<style>
+	.related {
+		margin-top: 4rem;
+	}
+
+	.related > div {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+		gap: 1rem;
+	}
+</style>

@@ -1,138 +1,354 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { PROFILE } from '../data/profile';
+import { PROJECTS } from '../data/projects';
+import PageLayout from '../layouts/PageLayout.astro';
+import { getFeaturedPosts, getPublishedPosts, getTags } from '../utils/posts';
+
+const posts = await getPublishedPosts({ includeDrafts: false });
+const featuredPosts = getFeaturedPosts(posts, 3);
+const tags = getTags(posts);
+const featuredProject = PROJECTS.find((project) => project.featured) ?? PROJECTS[0];
+const canonical = (Astro.site ?? new URL('https://xiaobing6-blog.pages.dev')).toString();
+
+const structuredData = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: PROFILE.name,
+		url: canonical,
+		jobTitle: PROFILE.role,
+		description: PROFILE.introduction,
+		sameAs: PROFILE.socialLinks.filter((link) => link.external).map((link) => link.href),
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		name: SITE_TITLE,
+		url: canonical,
+		description: SITE_DESCRIPTION,
+		inLanguage: 'zh-CN',
+		author: { '@type': 'Person', name: PROFILE.name },
+	},
+];
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main class="home">
-			<section class="hero">
-				<p class="eyebrow">欢迎来到</p>
-				<h1>{SITE_TITLE}</h1>
-				<p class="description">{SITE_DESCRIPTION}</p>
-				<div class="actions">
-					<a href="/blog" class="btn btn-primary">阅读文章</a>
-					<a href="/about" class="btn btn-secondary">了解更多</a>
+<PageLayout
+	title={SITE_TITLE}
+	description={SITE_DESCRIPTION}
+	pageType="profile"
+	structuredData={structuredData}
+	wide
+	mainClass="home-page"
+>
+	<section class="hero" aria-labelledby="hero-title">
+		<div class="hero-copy">
+			<p class="eyebrow">// {PROFILE.name} / PERSONAL TECH LOG</p>
+			<h1 id="hero-title">{PROFILE.tagline}</h1>
+			<p class="hero-intro">{PROFILE.introduction}</p>
+			<div class="hero-actions">
+				<a class="button button--primary" href="/projects/">查看项目</a>
+				<a class="button button--secondary" href="/blog/">阅读文章</a>
+			</div>
+			<ul class="focus-list" aria-label="关注方向">
+				{
+					PROFILE.focus.map((item) => (
+						<li>
+							<span aria-hidden="true">#</span>
+							{item}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<aside class="dossier surface" aria-label="个人技术档案">
+			<div class="dossier-top">
+				<span class="avatar" aria-hidden="true">{PROFILE.shortName}</span>
+				<div>
+					<strong>{PROFILE.name}</strong>
+					<p>{PROFILE.role}</p>
 				</div>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+			</div>
+			<dl>
+				<div>
+					<dt>STATUS</dt>
+					<dd><span class="live-dot" aria-hidden="true"></span>{PROFILE.availability}</dd>
+				</div>
+				<div>
+					<dt>ARTICLES</dt>
+					<dd>{posts.length} 篇公开文章</dd>
+				</div>
+				<div>
+					<dt>TOPICS</dt>
+					<dd>{tags.length} 个持续主题</dd>
+				</div>
+				<div>
+					<dt>DEPLOY</dt>
+					<dd>Cloudflare Pages</dd>
+				</div>
+			</dl>
+			<div class="dossier-links">
+				{
+					PROFILE.socialLinks.map((link) => (
+						<a
+							href={link.href}
+							target={link.external ? '_blank' : undefined}
+							rel={link.external ? 'noreferrer' : undefined}
+						>
+							{link.label}
+							<span aria-hidden="true"> ↗</span>
+						</a>
+					))
+				}
+			</div>
+		</aside>
+	</section>
+
+	<section class="home-section" aria-labelledby="project-heading">
+		<div class="section-header">
+			<div>
+				<p class="eyebrow">SELECTED WORK</p>
+				<h2 id="project-heading">从这个站点开始，展示真实实践</h2>
+			</div>
+			<a class="section-link" href="/projects/">全部项目 →</a>
+		</div>
+		{featuredProject && <ProjectCard project={featuredProject} />}
+	</section>
+
+	<section class="home-section" aria-labelledby="writing-heading">
+		<div class="section-header">
+			<div>
+				<p class="eyebrow">WRITING</p>
+				<h2 id="writing-heading">最近的技术记录</h2>
+			</div>
+			<a class="section-link" href="/blog/">浏览全部文章 →</a>
+		</div>
+		{
+			featuredPosts.length > 0 ? (
+				<div class="post-grid">
+					{featuredPosts.map((post) => (
+						<PostCard post={post} />
+					))}
+				</div>
+			) : (
+				<div class="empty-state surface">
+					<p>第一篇公开文章正在整理中。</p>
+				</div>
+			)
+		}
+	</section>
+
+	<section class="home-section practice" aria-labelledby="practice-heading">
+		<div>
+			<p class="eyebrow">PRACTICE MAP</p>
+			<h2 id="practice-heading">本站正在验证的能力</h2>
+			<p>这里不使用熟练度百分比；每个关键词都会逐步由项目、文章或公开源码来证明。</p>
+		</div>
+		<div class="skill-groups">
+			{
+				PROFILE.skills.map((group) => (
+					<section class="skill-group surface">
+						<h3>{group.label}</h3>
+						<ul class="tag-list">
+							{group.items.map((item) => (
+								<li>
+									<span class="tag">{item}</span>
+								</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+		</div>
+	</section>
+</PageLayout>
 
 <style>
-	.home {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-height: calc(100vh - 200px);
-		text-align: center;
-		background: transparent;
-		border: none;
-		box-shadow: none;
-		margin: 0 auto;
-		padding: 4rem 1.5rem;
-		flex: 1 0 auto;
+	:global(.home-page) {
+		padding-top: clamp(3rem, 8vw, 6.5rem);
 	}
 
 	.hero {
-		max-width: 560px;
+		display: grid;
+		grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+		align-items: center;
+		gap: clamp(2.5rem, 7vw, 6rem);
+		min-height: 58vh;
 	}
 
-	.eyebrow {
-		font-size: 0.8125rem;
-		font-weight: 500;
-		color: var(--accent);
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		margin-bottom: 1rem;
-		animation: fadeInUp 0.6s ease-out both;
+	.hero-copy h1 {
+		max-width: 760px;
+		margin-bottom: 1.5rem;
 	}
 
-	h1 {
-		font-size: 3.5rem;
-		font-weight: 700;
-		margin-bottom: 1.25rem;
-		animation: fadeInUp 0.6s ease-out 0.1s both;
-		color: var(--text-primary);
-		letter-spacing: -0.04em;
-	}
-
-	.description {
-		font-size: 1.125rem;
+	.hero-intro {
+		max-width: 680px;
 		color: var(--text-secondary);
-		margin-bottom: 2.5rem;
-		line-height: 1.6;
-		animation: fadeInUp 0.6s ease-out 0.2s both;
+		font-size: clamp(1.03rem, 2vw, 1.2rem);
+		line-height: 1.72;
 	}
 
-	.actions {
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 2rem 0 1.7rem;
+	}
+
+	.focus-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem 1rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+	}
+
+	.focus-list span {
+		color: var(--accent);
+	}
+
+	.dossier {
+		padding: 1.3rem;
+		transform: rotate(0.5deg);
+	}
+
+	.dossier-top {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.avatar {
+		width: 52px;
+		height: 52px;
+		display: grid;
+		place-items: center;
+		border-radius: 15px;
+		background: var(--text-primary);
+		color: var(--bg-primary);
+		font-size: 1.2rem;
+		font-weight: 700;
+	}
+
+	.dossier-top strong {
+		display: block;
+		font-size: 1rem;
+	}
+
+	.dossier-top p {
+		margin: 0.15rem 0 0;
+		color: var(--text-muted);
+		font-size: 0.8rem;
+	}
+
+	.dossier dl {
+		margin: 0;
+	}
+
+	.dossier dl div {
+		display: grid;
+		grid-template-columns: 88px 1fr;
+		gap: 0.5rem;
+		padding: 0.85rem 0;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.dossier dt {
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+	}
+
+	.dossier dd {
+		margin: 0;
+		color: var(--text-secondary);
+		font-size: 0.84rem;
+	}
+
+	.live-dot {
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		margin-right: 0.45rem;
+		border-radius: 50%;
+		background: #34c759;
+	}
+
+	.dossier-links {
 		display: flex;
 		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-		animation: fadeInUp 0.6s ease-out 0.3s both;
+		padding-top: 1rem;
+		font-size: 0.82rem;
+		font-weight: 650;
 	}
 
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0.8125rem 1.75rem;
-		border-radius: 980px;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		transition: all 0.2s ease;
+	.home-section {
+		margin-top: clamp(5rem, 10vw, 8rem);
 	}
 
-	.btn:hover {
-		transform: translateY(-1px);
+	.post-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+		gap: 1rem;
 	}
 
-	.btn-primary {
-		background: var(--accent);
-		color: white;
+	.empty-state {
+		padding: 2rem;
+		color: var(--text-secondary);
 	}
 
-	.btn-primary:hover {
-		background: var(--accent-light);
-		color: white;
-		box-shadow: var(--shadow-md);
+	.empty-state p {
+		margin: 0;
 	}
 
-	.btn-secondary {
-		background: transparent;
-		color: var(--accent);
-		border: 1px solid var(--border);
+	.practice {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: clamp(2rem, 6vw, 5rem);
+		align-items: start;
 	}
 
-	.btn-secondary:hover {
-		background: var(--bg-secondary);
-		color: var(--accent);
-		border-color: var(--accent);
+	.practice > div:first-child > p:last-child {
+		max-width: 480px;
+		color: var(--text-secondary);
 	}
 
-	@media (max-width: 720px) {
-		.home {
+	.skill-groups {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.skill-group {
+		padding: 1.25rem;
+	}
+
+	.skill-group h3 {
+		margin-bottom: 0.9rem;
+		font-size: 1rem;
+	}
+
+	@media (max-width: 860px) {
+		.hero,
+		.practice {
+			grid-template-columns: 1fr;
+		}
+
+		.hero {
 			min-height: auto;
-			padding-top: 4rem;
-			padding-bottom: 4rem;
 		}
 
-		h1 {
-			font-size: 2.5rem;
-		}
-
-		.actions {
-			flex-direction: column;
-			align-items: stretch;
+		.dossier {
+			max-width: 540px;
+			transform: none;
 		}
 	}
 </style>

@@ -2,31 +2,31 @@
 import PostCard from '../../../components/PostCard.astro';
 import { SITE_TITLE } from '../../../consts';
 import PageLayout from '../../../layouts/PageLayout.astro';
-import { getPublishedPosts, getTags } from '../../../utils/posts';
+import { getCategories, getPublishedPosts } from '../../../utils/posts';
 
 export async function getStaticPaths() {
 	const posts = await getPublishedPosts();
-	return getTags(posts).map(({ name }) => ({
-		params: { tag: name },
-		props: { tag: name, posts: posts.filter((post) => post.data.tags.includes(name)) },
+	return getCategories(posts).map(({ name }) => ({
+		params: { category: name },
+		props: { category: name, posts: posts.filter((post) => post.data.category === name) },
 	}));
 }
 
 interface Props {
-	tag: string;
+	category: string;
 	posts: Awaited<ReturnType<typeof getPublishedPosts>>;
 }
 
-const { tag, posts } = Astro.props;
+const { category, posts } = Astro.props;
 ---
 
 <PageLayout
-	title={'标签：' + tag + ' | ' + SITE_TITLE}
-	description={'包含标签“' + tag + '”的技术文章。'}
+	title={'分类：' + category + ' | ' + SITE_TITLE}
+	description={'“' + category + '”分类下的技术文章。'}
 >
 	<header class="taxonomy-header">
-		<p class="eyebrow">TAG / {tag.toUpperCase()}</p>
-		<h1>#{tag}</h1>
+		<p class="eyebrow">CATEGORY</p>
+		<h1>{category}</h1>
 		<p>共 {posts.length} 篇文章</p>
 	</header>
 
@@ -34,7 +34,7 @@ const { tag, posts } = Astro.props;
 		{posts.map((post) => <PostCard post={post} compact />)}
 	</div>
 
-	<a class="back-link" href="/blog/tags/">← 返回全部标签</a>
+	<a class="back-link" href="/blog/categories/">← 返回全部分类</a>
 </PageLayout>
 
 <style>

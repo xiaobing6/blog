@@ -1,0 +1,83 @@
+<button
+	class="theme-toggle"
+	type="button"
+	data-theme-toggle
+	aria-label="切换为深色主题"
+	aria-pressed="false"
+>
+	<svg class="sun" aria-hidden="true" viewBox="0 0 24 24">
+		<circle cx="12" cy="12" r="3.5"></circle>
+		<path
+			d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
+		></path>
+	</svg>
+	<svg class="moon" aria-hidden="true" viewBox="0 0 24 24">
+		<path d="M20 15.1A8.5 8.5 0 0 1 8.9 4 8.5 8.5 0 1 0 20 15.1Z"></path>
+	</svg>
+</button>
+
+<script>
+	const syncThemeButtons = () => {
+		const dark = document.documentElement.classList.contains('dark');
+		document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+			button.setAttribute('aria-pressed', String(dark));
+			button.setAttribute('aria-label', dark ? '切换为浅色主题' : '切换为深色主题');
+		});
+	};
+
+	syncThemeButtons();
+
+	document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const dark = !document.documentElement.classList.contains('dark');
+			document.documentElement.classList.toggle('dark', dark);
+			document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+			localStorage.setItem('theme', dark ? 'dark' : 'light');
+			syncThemeButtons();
+		});
+	});
+</script>
+
+<style>
+	.theme-toggle {
+		width: 44px;
+		height: 44px;
+		display: inline-grid;
+		place-items: center;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: var(--text-secondary);
+		cursor: pointer;
+		transition:
+			background 150ms var(--ease),
+			color 150ms var(--ease);
+	}
+
+	.theme-toggle:hover {
+		background: var(--bg-secondary);
+		color: var(--text-primary);
+	}
+
+	.theme-toggle svg {
+		width: 19px;
+		height: 19px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.moon {
+		display: none;
+	}
+
+	:global(.dark) .sun {
+		display: none;
+	}
+
+	:global(.dark) .moon {
+		display: block;
+	}
+</style>

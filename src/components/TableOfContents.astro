@@ -1,0 +1,72 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+	items.length > 1 && (
+		<nav class="toc surface" aria-label="文章目录">
+			<p>本页目录</p>
+			<ol>
+				{items.map((heading) => (
+					<li class:list={{ nested: heading.depth === 3 }}>
+						<a href={'#' + heading.slug}>{heading.text}</a>
+					</li>
+				))}
+			</ol>
+		</nav>
+	)
+}
+
+<style>
+	.toc {
+		position: sticky;
+		top: 80px;
+		padding: 1rem;
+	}
+
+	.toc > p {
+		margin: 0 0 0.7rem;
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	ol {
+		display: grid;
+		gap: 0.15rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	a {
+		display: block;
+		padding: 0.4rem 0.5rem;
+		border-left: 2px solid transparent;
+		border-radius: 0 7px 7px 0;
+		color: var(--text-muted);
+		font-size: 0.78rem;
+		line-height: 1.4;
+	}
+
+	a:hover,
+	a[aria-current='true'] {
+		border-left-color: var(--accent);
+		background: var(--accent-surface);
+		color: var(--text-primary);
+	}
+
+	.nested a {
+		padding-left: 1rem;
+		font-size: 0.74rem;
+	}
+</style>

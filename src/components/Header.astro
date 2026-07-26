@@ -1,72 +1,161 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 
-<header>
-	<nav>
-		<a href="/" class="site-title">{SITE_TITLE}</a>
-		<div class="nav-links">
+<header class="site-header">
+	<div class="nav-shell">
+		<a href="/" class="brand" aria-label={SITE_TITLE + '首页'}>
+			<span class="brand-mark" aria-hidden="true">明</span>
+			<span class="brand-name">{SITE_TITLE}</span>
+		</a>
+
+		<nav class="nav-links" aria-label="主导航">
 			<HeaderLink href="/">首页</HeaderLink>
-			<HeaderLink href="/blog">博客</HeaderLink>
+			<HeaderLink href="/projects">项目</HeaderLink>
+			<HeaderLink href="/blog">文章</HeaderLink>
 			<HeaderLink href="/about">关于</HeaderLink>
+		</nav>
+
+		<div class="nav-actions">
+			<a class="search-link" href="/search" aria-label="搜索文章">
+				<svg aria-hidden="true" viewBox="0 0 24 24">
+					<circle cx="11" cy="11" r="6.5"></circle>
+					<path d="m16 16 4 4"></path>
+				</svg>
+			</a>
+			<ThemeToggle />
 		</div>
-	</nav>
+	</div>
 </header>
 
 <style>
-	header {
+	.site-header {
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		padding: 0 1.5rem;
-		background: rgba(255, 255, 255, 0.72);
-		backdrop-filter: saturate(180%) blur(20px);
-		-webkit-backdrop-filter: saturate(180%) blur(20px);
-		border-bottom: 1px solid var(--border);
+		min-height: 56px;
+		padding: 0 1.25rem;
+		background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+		border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+		backdrop-filter: saturate(180%) blur(18px);
+		-webkit-backdrop-filter: saturate(180%) blur(18px);
 	}
 
-	nav {
-		max-width: 780px;
+	.nav-shell {
+		width: min(1120px, 100%);
+		min-height: 56px;
 		margin: 0 auto;
-		display: flex;
+		display: grid;
+		grid-template-columns: minmax(150px, 1fr) auto minmax(150px, 1fr);
 		align-items: center;
-		justify-content: space-between;
-		height: 52px;
-		gap: 1.5rem;
+		gap: 1rem;
 	}
 
-	.site-title {
-		font-family: var(--font-sans);
-		font-size: 1.125rem;
-		font-weight: 600;
+	.brand {
+		justify-self: start;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.65rem;
+		min-height: 44px;
 		color: var(--text-primary);
+		font-size: 0.96rem;
+		font-weight: 650;
 		letter-spacing: -0.01em;
 	}
 
-	.site-title:hover {
-		color: var(--accent);
+	.brand:hover {
+		color: var(--text-primary);
+	}
+
+	.brand-mark {
+		width: 30px;
+		height: 30px;
+		display: grid;
+		place-items: center;
+		border-radius: 9px;
+		background: var(--text-primary);
+		color: var(--bg-primary);
+		font-size: 0.85rem;
+		font-weight: 700;
 	}
 
 	.nav-links {
 		display: flex;
-		gap: 1.75rem;
+		align-items: center;
+		gap: 0.15rem;
 	}
 
-	@media (max-width: 720px) {
-		header {
-			padding: 0 1rem;
+	.nav-actions {
+		justify-self: end;
+		display: flex;
+		align-items: center;
+	}
+
+	.search-link {
+		width: 44px;
+		height: 44px;
+		display: grid;
+		place-items: center;
+		border-radius: 999px;
+		color: var(--text-secondary);
+		transition:
+			background 150ms var(--ease),
+			color 150ms var(--ease);
+	}
+
+	.search-link:hover {
+		background: var(--bg-secondary);
+		color: var(--text-primary);
+	}
+
+	.search-link svg {
+		width: 19px;
+		height: 19px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.8;
+		stroke-linecap: round;
+	}
+
+	@media (max-width: 760px) {
+		.site-header {
+			padding: 0 0.75rem;
 		}
 
-		nav {
-			flex-direction: column;
+		.nav-shell {
+			grid-template-columns: auto 1fr auto;
 			gap: 0.5rem;
-			height: auto;
-			padding: 0.75rem 0;
+		}
+
+		.brand-name {
+			display: none;
 		}
 
 		.nav-links {
-			gap: 1.25rem;
+			justify-content: center;
+			overflow-x: auto;
+			scrollbar-width: none;
+		}
+
+		.nav-links::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.nav-shell {
+			grid-template-columns: auto 1fr auto;
+		}
+
+		.nav-links :global(a) {
+			padding-inline: 0.48rem;
+			font-size: 0.8rem;
+		}
+
+		.search-link {
+			width: 40px;
 		}
 	}
 </style>

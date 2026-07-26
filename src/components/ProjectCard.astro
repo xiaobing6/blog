@@ -1,0 +1,165 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+	project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="project-card surface">
+	<div class="project-card__header">
+		<div>
+			<p class="project-index" aria-hidden="true">PROJECT / {project.slug.toUpperCase()}</p>
+			<h2>{project.title}</h2>
+		</div>
+		<span class="status"><span aria-hidden="true"></span>已上线</span>
+	</div>
+
+	<p class="summary">{project.summary}</p>
+
+	<dl>
+		<div>
+			<dt>角色</dt>
+			<dd>{project.role}</dd>
+		</div>
+		<div>
+			<dt>成果</dt>
+			<dd>
+				<ul>
+					{project.outcomes.map((outcome) => <li>{outcome}</li>)}
+				</ul>
+			</dd>
+		</div>
+	</dl>
+
+	<ul class="tag-list" aria-label="项目技术栈">
+		{
+			project.stack.map((item) => (
+				<li>
+					<span class="tag">{item}</span>
+				</li>
+			))
+		}
+	</ul>
+
+	<div class="project-actions">
+		<a class="button button--primary" href={project.href} target="_blank" rel="noreferrer">
+			访问站点 <span aria-hidden="true">↗</span>
+		</a>
+		{
+			project.repository && (
+				<a
+					class="button button--secondary"
+					href={project.repository}
+					target="_blank"
+					rel="noreferrer"
+				>
+					查看源码 <span aria-hidden="true">↗</span>
+				</a>
+			)
+		}
+	</div>
+</article>
+
+<style>
+	.project-card {
+		padding: clamp(1.35rem, 3vw, 2rem);
+	}
+
+	.project-card__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	.project-index {
+		margin: 0 0 0.5rem;
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.05em;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: clamp(1.55rem, 4vw, 2.2rem);
+	}
+
+	.status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		flex: 0 0 auto;
+		min-height: 32px;
+		padding: 0.25rem 0.65rem;
+		border-radius: 999px;
+		background: var(--bg-secondary);
+		color: var(--text-secondary);
+		font-size: 0.74rem;
+	}
+
+	.status span {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: #34c759;
+	}
+
+	.summary {
+		max-width: 680px;
+		margin-bottom: 1.5rem;
+		color: var(--text-secondary);
+	}
+
+	dl {
+		display: grid;
+		gap: 0.75rem;
+		margin: 0 0 1.4rem;
+	}
+
+	dl > div {
+		display: grid;
+		grid-template-columns: 72px 1fr;
+		gap: 1rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--border);
+	}
+
+	dt {
+		color: var(--text-muted);
+		font-size: 0.8rem;
+	}
+
+	dd {
+		margin: 0;
+		color: var(--text-secondary);
+		font-size: 0.9rem;
+	}
+
+	dd ul {
+		margin: 0;
+		padding-left: 1.1rem;
+	}
+
+	.project-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.7rem;
+		margin-top: 1.5rem;
+	}
+
+	@media (max-width: 560px) {
+		.project-card__header {
+			flex-direction: column;
+		}
+
+		dl > div {
+			grid-template-columns: 1fr;
+			gap: 0.2rem;
+		}
+	}
+</style>

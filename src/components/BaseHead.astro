@@ -1,25 +1,46 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
+// Global styles are loaded from the shared head so every page receives the same token layer.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
-import { SITE_TITLE } from '../consts';
+import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+
+type PageType = 'website' | 'article' | 'profile';
 
 interface Props {
 	title: string;
 	description: string;
-	image?: ImageMetadata;
+	image?: ImageMetadata | string;
+	pageType?: PageType;
+	publishedTime?: Date;
+	updatedTime?: Date;
+	tags?: string[];
+	noindex?: boolean;
+	structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
-const { title, description, image = FallbackImage } = Astro.props;
+const {
+	title,
+	description,
+	image = FallbackImage,
+	pageType = 'website',
+	publishedTime,
+	updatedTime,
+	tags = [],
+	noindex = false,
+	structuredData,
+} = Astro.props;
+const imagePath = typeof image === 'string' ? image : image.src;
+const imageURL = new URL(imagePath, Astro.site);
+const ogType = pageType === 'article' ? 'article' : 'website';
 ---
 
-<!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7fa" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -30,33 +51,60 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
-
-<!-- DM Sans + JetBrains Mono -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-	href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap"
-	rel="stylesheet"
-/>
-
-<!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+{noindex && <meta name="robots" content="noindex,nofollow" />}
 
-<!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="author" content={SITE_AUTHOR} />
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:image:alt" content={title} />
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalURL} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+{
+	pageType === 'article' && (
+		<>
+			{publishedTime && (
+				<meta property="article:published_time" content={publishedTime.toISOString()} />
+			)}
+			{updatedTime && <meta property="article:modified_time" content={updatedTime.toISOString()} />}
+			<meta property="article:author" content={SITE_AUTHOR} />
+			{tags.map((tag) => (
+				<meta property="article:tag" content={tag} />
+			))}
+		</>
+	)
+}
+
+{
+	structuredData && (
+		<script
+			type="application/ld+json"
+			is:inline
+			set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')}
+		/>
+	)
+}
+
+<script is:inline>
+	(() => {
+		const savedTheme = localStorage.getItem('theme');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const useDark = savedTheme === 'dark' || (savedTheme !== 'light' && prefersDark);
+		document.documentElement.classList.toggle('dark', useDark);
+		document.documentElement.style.colorScheme = useDark ? 'dark' : 'light';
+	})();
+</script>

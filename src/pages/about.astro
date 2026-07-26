@@ -1,84 +1,325 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import { Image } from 'astro:assets';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
 import { SITE_TITLE } from '../consts';
+import { PROFILE } from '../data/profile';
+import PageLayout from '../layouts/PageLayout.astro';
+
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@type': 'ProfilePage',
+	name: '关于 ' + PROFILE.name,
+	description: PROFILE.introduction,
+	mainEntity: {
+		'@type': 'Person',
+		name: PROFILE.name,
+		jobTitle: PROFILE.role,
+		description: PROFILE.introduction,
+		sameAs: PROFILE.socialLinks.filter((link) => link.external).map((link) => link.href),
+	},
+};
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-	<head>
-		<BaseHead title={`关于 | ${SITE_TITLE}`} description="这是我的 Astro 练手博客" />
-	</head>
-	<body>
-		<Header />
-		<main class="about">
-			<header class="page-header">
-				<p class="eyebrow">关于</p>
-				<h1>关于我</h1>
-			</header>
-
-			<div class="hero-image">
-				<Image src={AboutHeroImage} alt="关于我" />
+<PageLayout
+	title={'关于我 | ' + SITE_TITLE}
+	description={PROFILE.introduction}
+	pageType="profile"
+	structuredData={structuredData}
+	wide
+	mainClass="about-page"
+>
+	<header class="about-hero">
+		<div class="identity surface" aria-hidden="true">
+			<span class="identity-mark">{PROFILE.shortName}</span>
+			<div class="identity-code">
+				<span>PROFILE_001</span>
+				<span>UPDATED / CONTINUOUS</span>
 			</div>
+		</div>
+		<div>
+			<p class="eyebrow">ABOUT / {PROFILE.name}</p>
+			<h1>你好，我是{PROFILE.name}。</h1>
+			<p class="lead">{PROFILE.introduction}</p>
+			<div class="about-actions">
+				<a class="button button--primary" href="/projects/">看我的项目</a>
+				<a
+					class="button button--secondary"
+					href="https://github.com/xiaobing6"
+					target="_blank"
+					rel="noreferrer"
+				>
+					GitHub ↗
+				</a>
+			</div>
+		</div>
+	</header>
 
+	<div class="about-grid">
+		<section class="story" aria-labelledby="story-heading">
+			<p class="eyebrow">WHY THIS SITE</p>
+			<h2 id="story-heading">这是介绍，也是持续更新的工作记录</h2>
 			<div class="prose">
 				<p>
-					你好！这是我的第一个 Astro 博客项目。我正在学习如何使用 Astro + Markdown 搭建一个静态博客网站。
+					我把这个站点作为个人介绍、技术分享和学习复盘的统一入口。比起只罗列技术名词，我更希望用可以访问的项目、可以阅读的文章和公开源码，让别人快速理解我在做什么、如何思考。
 				</p>
-
-				<p>这个博客使用以下技术栈：</p>
-
-				<ul>
-					<li><strong>Astro</strong> - 静态站点生成器</li>
-					<li><strong>Markdown</strong> - 文章内容格式</li>
-					<li><strong>Tailwind CSS</strong> - 样式框架</li>
-				</ul>
-
 				<p>
-					我会在这里记录学习笔记、技术心得和一些生活随笔。欢迎常来看看！
+					目前站点围绕 Web
+					开发、静态站点工程和技术写作展开。内容会随着真实实践逐步补充；没有作品支撑的能力，不会用虚构数据包装。
 				</p>
 			</div>
-		</main>
-		<Footer />
-	</body>
-</html>
+		</section>
+
+		<aside class="principles surface" aria-labelledby="principles-heading">
+			<h2 id="principles-heading">内容原则</h2>
+			<ol>
+				<li>
+					<span>01</span><div><strong>真实</strong><p>只展示已有项目、文章和可验证链接。</p></div>
+				</li>
+				<li>
+					<span>02</span><div><strong>可复用</strong><p>记录结论，也记录做出判断的过程。</p></div>
+				</li>
+				<li>
+					<span>03</span><div>
+						<strong>持续更新</strong><p>把站点本身当作长期维护的工程实践。</p>
+					</div>
+				</li>
+			</ol>
+		</aside>
+	</div>
+
+	<section class="skills-section" aria-labelledby="skills-heading">
+		<div class="section-header">
+			<div>
+				<p class="eyebrow">CAPABILITY MAP</p>
+				<h2 id="skills-heading">正在实践与长期关注</h2>
+			</div>
+		</div>
+		<div class="skill-grid">
+			{
+				PROFILE.skills.map((group) => (
+					<section class="skill-card surface">
+						<h3>{group.label}</h3>
+						<ul>
+							{group.items.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="contact-strip surface" aria-labelledby="contact-heading">
+		<div>
+			<p class="eyebrow">FOLLOW THE WORK</p>
+			<h2 id="contact-heading">从项目或文章继续了解我</h2>
+			<p>公开联系方式目前以 GitHub 为主，也可以通过 RSS 订阅后续更新。</p>
+		</div>
+		<div class="contact-links">
+			{
+				PROFILE.socialLinks.map((link) => (
+					<a
+						class="button button--secondary"
+						href={link.href}
+						target={link.external ? '_blank' : undefined}
+						rel={link.external ? 'noreferrer' : undefined}
+					>
+						{link.label}
+						{link.external ? ' ↗' : ''}
+					</a>
+				))
+			}
+		</div>
+	</section>
+</PageLayout>
 
 <style>
-	.page-header {
-		text-align: center;
-		margin-bottom: 2.5rem;
+	.about-hero {
+		display: grid;
+		grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+		gap: clamp(2rem, 7vw, 6rem);
+		align-items: center;
+		margin-bottom: clamp(5rem, 10vw, 8rem);
 	}
 
-	.eyebrow {
-		font-size: 0.8125rem;
-		font-weight: 500;
+	.identity {
+		aspect-ratio: 4 / 5;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding: 1.4rem;
+		background:
+			linear-gradient(var(--border) 1px, transparent 1px),
+			linear-gradient(90deg, var(--border) 1px, transparent 1px), var(--bg-primary);
+		background-size: 32px 32px;
+	}
+
+	.identity-mark {
+		width: 84px;
+		height: 84px;
+		display: grid;
+		place-items: center;
+		border-radius: 24px;
+		background: var(--text-primary);
+		color: var(--bg-primary);
+		font-size: 2rem;
+		font-weight: 700;
+	}
+
+	.identity-code {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-top: 0.8rem;
+		border-top: 1px solid var(--text-primary);
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.64rem;
+	}
+
+	.about-hero h1 {
+		margin-bottom: 1.4rem;
+	}
+
+	.lead {
+		max-width: 700px;
+		color: var(--text-secondary);
+		font-size: clamp(1.08rem, 2vw, 1.26rem);
+		line-height: 1.75;
+	}
+
+	.about-actions,
+	.contact-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 1.8rem;
+	}
+
+	.about-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+		gap: clamp(2rem, 6vw, 5rem);
+		align-items: start;
+	}
+
+	.story h2 {
+		max-width: 650px;
+	}
+
+	.principles {
+		padding: 1.4rem;
+	}
+
+	.principles h2 {
+		font-size: 1.25rem;
+	}
+
+	.principles ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.principles li {
+		display: grid;
+		grid-template-columns: 38px 1fr;
+		gap: 0.8rem;
+		padding: 1rem 0;
+		border-top: 1px solid var(--border);
+	}
+
+	.principles li > span {
 		color: var(--accent);
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		margin: 0 0 0.75rem 0;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
 	}
 
-	.page-header h1 {
-		font-size: 2.75rem;
-		margin-bottom: 0;
-		letter-spacing: -0.03em;
+	.principles strong {
+		font-size: 0.92rem;
 	}
 
-	.hero-image {
-		margin-bottom: 2.5rem;
+	.principles p {
+		margin: 0.2rem 0 0;
+		color: var(--text-secondary);
+		font-size: 0.84rem;
 	}
 
-	.hero-image img {
-		width: 100%;
-		border-radius: var(--radius-md);
+	.skills-section {
+		margin-top: clamp(5rem, 10vw, 8rem);
 	}
 
-	@media (max-width: 720px) {
-		.page-header h1 {
-			font-size: 2rem;
+	.skill-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.skill-card {
+		padding: 1.4rem;
+	}
+
+	.skill-card h3 {
+		font-size: 1rem;
+	}
+
+	.skill-card ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 0.65rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.skill-card li {
+		padding-top: 0.65rem;
+		border-top: 1px solid var(--border);
+		color: var(--text-secondary);
+		font-size: 0.88rem;
+	}
+
+	.contact-strip {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+		margin-top: clamp(5rem, 10vw, 8rem);
+		padding: clamp(1.5rem, 4vw, 2.4rem);
+	}
+
+	.contact-strip h2 {
+		margin-bottom: 0.6rem;
+		font-size: clamp(1.6rem, 4vw, 2.2rem);
+	}
+
+	.contact-strip p:last-child {
+		margin: 0;
+		color: var(--text-secondary);
+	}
+
+	.contact-links {
+		flex: 0 0 auto;
+		margin-top: 0;
+	}
+
+	@media (max-width: 800px) {
+		.about-hero,
+		.about-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.identity {
+			max-width: 400px;
+			aspect-ratio: 16 / 10;
+		}
+
+		.skill-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.contact-strip {
+			align-items: flex-start;
+			flex-direction: column;
 		}
 	}
 </style>

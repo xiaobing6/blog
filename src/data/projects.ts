@@ -1,0 +1,32 @@
+export interface Project {
+	slug: string;
+	title: string;
+	summary: string;
+	role: string;
+	stack: readonly string[];
+	outcomes: readonly string[];
+	href: string;
+	repository?: string;
+	relatedPosts: readonly string[];
+	featured: boolean;
+}
+
+export const PROJECTS: readonly Project[] = [
+	{
+		slug: 'personal-tech-blog',
+		title: '个人技术博客',
+		summary:
+			'用于个人介绍、技术分享与学习复盘的静态站点，也是持续验证内容组织和前端工程实践的载体。',
+		role: '独立设计、开发与维护',
+		stack: ['Astro', 'TypeScript', 'Markdown / MDX', 'Tailwind CSS', 'Cloudflare Pages'],
+		outcomes: [
+			'静态生成并部署到 Cloudflare Pages',
+			'支持标签、分类、归档、RSS、Sitemap 与静态全文搜索',
+			'补齐亮暗主题、文章目录、阅读时长、代码复制与相关推荐',
+		],
+		href: 'https://xiaobing6-blog.pages.dev/',
+		repository: 'https://github.com/xiaobing6/blog',
+		relatedPosts: ['my-first-post'],
+		featured: true,
+	},
+];

@@ -1,0 +1,79 @@
+---
+import type { AdjacentPosts } from '../utils/posts';
+
+interface Props {
+	adjacent: AdjacentPosts;
+}
+
+const { adjacent } = Astro.props;
+---
+
+{
+	(adjacent.older || adjacent.newer) && (
+		<nav class="post-navigation" aria-label="相邻文章">
+			{adjacent.older ? (
+				<a class="surface" href={'/blog/' + adjacent.older.id + '/'}>
+					<span>← 上一篇</span>
+					<strong>{adjacent.older.data.title}</strong>
+				</a>
+			) : (
+				<span />
+			)}
+			{adjacent.newer ? (
+				<a class="surface next" href={'/blog/' + adjacent.newer.id + '/'}>
+					<span>下一篇 →</span>
+					<strong>{adjacent.newer.data.title}</strong>
+				</a>
+			) : (
+				<span />
+			)}
+		</nav>
+	)
+}
+
+<style>
+	.post-navigation {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: 3rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--border);
+	}
+
+	a {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		min-height: 108px;
+		padding: 1rem;
+		color: var(--text-primary);
+	}
+
+	a:hover {
+		border-color: var(--accent);
+		color: var(--text-primary);
+	}
+
+	a span {
+		color: var(--accent);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+	}
+
+	a strong {
+		font-size: 0.9rem;
+		line-height: 1.45;
+	}
+
+	.next {
+		align-items: flex-end;
+		text-align: right;
+	}
+
+	@media (max-width: 560px) {
+		.post-navigation {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

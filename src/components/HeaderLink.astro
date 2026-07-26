@@ -5,33 +5,43 @@ type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
 const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
-const subpath = pathname.match(/[^\/]+/g);
+const subpath = pathname.match(/[^/]+/g);
 const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 ---
 
-<a href={href} class:list={[className, { active: isActive }]} {...props}>
+<a
+	href={href}
+	class:list={[className, { active: isActive }]}
+	aria-current={isActive ? 'page' : undefined}
+	{...props}
+>
 	<slot />
 </a>
 
 <style>
 	a {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		padding: 0 0.7rem;
+		border-radius: 999px;
 		color: var(--text-secondary);
-		font-size: 0.875rem;
-		font-weight: 500;
-		padding: 0.375rem 0.75rem;
-		border-radius: 980px;
-		transition: color 0.2s ease, background 0.2s ease;
+		font-size: 0.86rem;
+		font-weight: 550;
+		white-space: nowrap;
+		transition:
+			color 150ms var(--ease),
+			background 150ms var(--ease);
 	}
 
 	a:hover {
-		color: var(--brand-400);
-		background: rgba(0, 122, 255, 0.06);
+		color: var(--text-primary);
+		background: var(--bg-secondary);
 	}
 
 	a.active {
-		color: var(--text-primary);
-		font-weight: 600;
-		background: var(--bg-secondary);
+		color: var(--accent);
+		background: var(--accent-surface);
 	}
 </style>
