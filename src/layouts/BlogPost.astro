@@ -19,6 +19,7 @@ interface Props {
 
 const { post, headings, stats, adjacent, related } = Astro.props;
 const { title, description, pubDate, updatedDate, heroImage, tags, category, draft } = post.data;
+const heroImagePath = typeof heroImage === 'string' ? heroImage : heroImage?.src;
 const site = Astro.site ?? new URL('https://xiaobing6-blog.pages.dev');
 const postUrl = new URL('/blog/' + post.id + '/', site).href;
 const structuredData = {
@@ -39,7 +40,7 @@ const structuredData = {
 		name: PROFILE.name,
 		url: site.href,
 	},
-	...(heroImage ? { image: new URL(heroImage.src, site).href } : {}),
+	...(heroImagePath ? { image: new URL(heroImagePath, site).href } : {}),
 };
 const hasToc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3).length > 1;
 ---
@@ -97,14 +98,25 @@ const hasToc = headings.filter((heading) => heading.depth === 2 || heading.depth
 		{
 			heroImage && (
 				<div class="hero-image" data-pagefind-meta="image[src]">
-					<Image
-						src={heroImage}
-						alt=""
-						width={1200}
-						height={600}
-						loading="eager"
-						fetchpriority="high"
-					/>
+					{typeof heroImage === 'string' ? (
+						<img
+							src={heroImage}
+							alt=""
+							width="1200"
+							height="600"
+							loading="eager"
+							fetchpriority="high"
+						/>
+					) : (
+						<Image
+							src={heroImage}
+							alt=""
+							width={1200}
+							height={600}
+							loading="eager"
+							fetchpriority="high"
+						/>
+					)}
 				</div>
 			)
 		}

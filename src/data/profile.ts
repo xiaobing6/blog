@@ -1,3 +1,5 @@
+import profileData from './profile.json';
+
 export interface SocialLink {
 	label: string;
 	href: string;
@@ -9,27 +11,16 @@ export interface SkillGroup {
 	items: readonly string[];
 }
 
-export const PROFILE = {
-	name: '张迎明',
-	shortName: '明',
-	role: '开发者 · 技术实践者',
-	tagline: '把学习过程整理成能复用的技术记录。',
-	introduction:
-		'我在这里记录 Web 开发、工程实践与持续学习中的判断和复盘。这个站点本身也是一个持续演进的个人项目。',
-	availability: '持续学习与创作中',
-	focus: ['Astro 与 TypeScript', '静态站点工程', '技术写作与知识整理'],
-	skills: [
-		{
-			label: '本站正在实践',
-			items: ['Astro', 'TypeScript', 'Tailwind CSS', 'Markdown / MDX', 'Cloudflare Pages'],
-		},
-		{
-			label: '长期关注',
-			items: ['前端工程', '内容组织', '性能与可访问性'],
-		},
-	] satisfies readonly SkillGroup[],
-	socialLinks: [
-		{ label: 'GitHub', href: 'https://github.com/xiaobing6', external: true },
-		{ label: 'RSS', href: '/rss.xml' },
-	] satisfies readonly SocialLink[],
-} as const;
+export interface Profile {
+	name: string;
+	shortName: string;
+	role: string;
+	tagline: string;
+	introduction: string;
+	availability: string;
+	focus: readonly string[];
+	skills: readonly SkillGroup[];
+	socialLinks: readonly SocialLink[];
+}
+
+export const PROFILE = profileData satisfies Profile;

@@ -6,6 +6,7 @@ updatedDate: 'Jul 26 2026'
 heroImage: '../../assets/blog-placeholder-1.jpg'
 tags: ['astro', 'markdown', 'learning']
 category: 'Astro'
+draft: false
 featured: true
 ---
 

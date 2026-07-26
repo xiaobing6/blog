@@ -1,0 +1,188 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: github
+  repo: xiaobing6/blog
+  branch: master
+  # 完成 GitHub OAuth + Cloudflare Worker 配置后，在此添加：
+  # base_url: https://sveltia-cms-auth.<你的-workers-subdomain>.workers.dev
+
+site_url: https://xiaobing6-blog.pages.dev
+display_url: https://xiaobing6-blog.pages.dev
+logo_url: /favicon.svg
+
+media_folder: /public/uploads
+public_folder: /uploads
+
+media_libraries:
+  default:
+    config:
+      max_file_size: 10485760
+      slugify_filename: true
+
+output:
+  omit_empty_optional_fields: true
+  json:
+    indent_style: tab
+    indent_size: 1
+  yaml:
+    quote: single
+    indent_size: 2
+    indent_sequences: true
+
+slug:
+  encoding: unicode
+  clean_accents: false
+  sanitize_replacement: '-'
+  trim: true
+  lowercase: true
+  timezone: local
+
+collections:
+  - name: blog
+    label: 文章
+    label_singular: 文章
+    icon: article
+    description: 新建和维护普通 Markdown 文章。新文章默认保存为草稿，关闭“草稿”后才会公开。
+    folder: /src/content/blog
+    format: yaml-frontmatter
+    extension: md
+    create: true
+    delete: true
+    slug: '{{fields._slug}}'
+    preview_path: /blog/{{slug}}/
+    identifier_field: title
+    summary: '{{title}} · {{category}} · {{pubDate}}'
+    sortable_fields: [pubDate, updatedDate, title, category, draft, featured]
+    fields:
+      - name: title
+        label: 标题
+        widget: string
+        minlength: 2
+        maxlength: 100
+      - name: description
+        label: 摘要
+        widget: text
+        hint: 用于文章列表、搜索结果和 SEO 描述，建议 50–160 字。
+        minlength: 10
+        maxlength: 200
+      - name: pubDate
+        label: 发布日期
+        widget: datetime
+        type: date
+        default: '{{now}}'
+      - name: updatedDate
+        label: 更新日期
+        widget: datetime
+        type: date
+        required: false
+        hint: 只有文章内容发生实质更新时再填写。
+      - name: heroImage
+        label: 封面图
+        widget: image
+        required: false
+        choose_url: true
+        hint: 建议使用 2:1 横图；上传后会保存在 public/uploads。
+      - name: category
+        label: 分类
+        widget: string
+        default: 未分类
+      - name: tags
+        label: 标签
+        widget: list
+        required: false
+        default: []
+        field:
+          name: tag
+          label: 标签
+          widget: string
+      - name: draft
+        label: 草稿
+        widget: boolean
+        default: true
+        hint: 开启时文章不会出现在公开页面、RSS、Sitemap 或站内搜索中。
+      - name: featured
+        label: 首页推荐
+        widget: boolean
+        default: false
+      - name: body
+        label: 正文
+        widget: richtext
+        hint: 支持可视化编辑与原始 Markdown 模式，也可直接粘贴或拖入图片。
+
+  - divider: true
+
+  - name: site_data
+    label: 网站资料
+    icon: badge
+    description: 维护个人介绍、技能、公开链接和项目经历。
+    format: json
+    files:
+      - name: profile
+        label: 个人资料
+        file: /src/data/profile.json
+        fields:
+          - { name: name, label: 姓名, widget: string }
+          - { name: shortName, label: 头像简称, widget: string, maxlength: 2 }
+          - { name: role, label: 身份定位, widget: string }
+          - { name: tagline, label: 首页主标题, widget: text }
+          - { name: introduction, label: 自我介绍, widget: text }
+          - { name: availability, label: 当前状态, widget: string }
+          - name: focus
+            label: 当前重点
+            widget: list
+            field: { name: item, label: 重点, widget: string }
+          - name: skills
+            label: 技能分组
+            widget: list
+            summary: '{{fields.label}}'
+            fields:
+              - { name: label, label: 分组名称, widget: string }
+              - name: items
+                label: 技能项
+                widget: list
+                field: { name: item, label: 技能, widget: string }
+          - name: socialLinks
+            label: 公开链接
+            widget: list
+            summary: '{{fields.label}} · {{fields.href}}'
+            fields:
+              - { name: label, label: 名称, widget: string }
+              - { name: href, label: 链接, widget: string }
+              - { name: external, label: 站外链接, widget: boolean, default: true }
+
+      - name: projects
+        label: 项目
+        file: /src/data/projects.json
+        fields:
+          - name: projects
+            label: 项目列表
+            widget: list
+            label_singular: 项目
+            summary: '{{fields.title}}'
+            fields:
+              - name: slug
+                label: 项目标识
+                widget: string
+                pattern:
+                  - '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+                  - 只使用小写英文、数字和连字符
+              - { name: title, label: 项目名称, widget: string }
+              - { name: summary, label: 项目简介, widget: text }
+              - { name: role, label: 我的角色, widget: string }
+              - name: stack
+                label: 技术栈
+                widget: list
+                field: { name: item, label: 技术, widget: string }
+              - name: outcomes
+                label: 项目成果
+                widget: list
+                field: { name: item, label: 成果, widget: text }
+              - { name: href, label: 项目链接, widget: string }
+              - { name: repository, label: 源码链接, widget: string, required: false }
+              - name: relatedPosts
+                label: 相关文章标识
+                widget: list
+                required: false
+                field: { name: slug, label: 文章标识, widget: string }
+              - { name: featured, label: 首页推荐, widget: boolean, default: false }

@@ -12,13 +12,18 @@ interface Props {
 const { post, compact = false } = Astro.props;
 const stats = getReadingStats(post.body ?? '');
 const href = '/blog/' + post.id + '/';
+const heroImage = post.data.heroImage;
 ---
 
 <article class:list={['post-card surface', { 'post-card--compact': compact }]}>
 	{
-		post.data.heroImage && !compact && (
+		heroImage && !compact && (
 			<a class="post-card__media" href={href} aria-label={'阅读：' + post.data.title}>
-				<Image src={post.data.heroImage} alt="" width={960} height={480} loading="lazy" />
+				{typeof heroImage === 'string' ? (
+					<img src={heroImage} alt="" width="960" height="480" loading="lazy" decoding="async" />
+				) : (
+					<Image src={heroImage} alt="" width={960} height={480} loading="lazy" />
+				)}
 			</a>
 		)
 	}
