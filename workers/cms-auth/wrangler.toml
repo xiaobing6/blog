@@ -1,0 +1,7 @@
+name = "xiaobing6-blog-cms-auth"
+main = "src/index.js"
+compatibility_date = "2026-07-26"
+
+[vars]
+ALLOWED_DOMAINS = "xiaobing6-blog.pages.dev"
+ALLOWED_GITHUB_USERS = "xiaobing6"

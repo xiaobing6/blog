@@ -4,8 +4,8 @@ backend:
   name: github
   repo: xiaobing6/blog
   branch: master
-  # 完成 GitHub OAuth + Cloudflare Worker 配置后，在此添加：
-  # base_url: https://sveltia-cms-auth.<你的-workers-subdomain>.workers.dev
+  base_url: https://xiaobing6-blog-cms-auth.912232670.workers.dev
+  auth_methods: [oauth]
 
 site_url: https://xiaobing6-blog.pages.dev
 display_url: https://xiaobing6-blog.pages.dev

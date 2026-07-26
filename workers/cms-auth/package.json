@@ -1,0 +1,12 @@
+{
+	"name": "xiaobing6-blog-cms-auth",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"license": "MIT",
+	"scripts": {
+		"test": "node --test",
+		"dev": "npx wrangler@4.110.0 dev",
+		"deploy": "npx wrangler@4.110.0 deploy"
+	}
+}

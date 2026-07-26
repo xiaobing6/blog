@@ -38,22 +38,37 @@
 
 官方说明：<https://sveltiacms.app/en/docs/backends/github>
 
-### 方式二：GitHub OAuth（推荐的最终状态）
+### 方式二：仅限本人账号的 GitHub OAuth（推荐的最终状态）
 
-OAuth 登录不需要你在浏览器里手工管理 Token，需要一次性部署 Sveltia CMS Authenticator：
+项目在 `workers/cms-auth` 中提供了基于官方认证器的定制 Worker。它会在 OAuth 完成后调用 GitHub 用户接口核对账号，只有 `xiaobing6` 才会收到令牌；其他账号会被拒绝。白名单缺失或 GitHub 校验失败时也会默认拒绝。
 
-1. 在 Cloudflare Workers 部署 <https://github.com/sveltia/sveltia-cms-auth>，记下 Worker 地址。
-2. 在 GitHub 的 Developer settings 中创建 OAuth App，Authorization callback URL 填写 `<Worker 地址>/callback`。
-3. 在 Worker 的 Settings → Variables 中配置：
-   - `GITHUB_CLIENT_ID`
-   - `GITHUB_CLIENT_SECRET`（必须加密）
+1. 测试并部署 Worker，记下生成的 `workers.dev` 地址：
+
+   ```powershell
+   cd workers/cms-auth
+   npm test
+   npm run deploy
+   ```
+
+2. 在 GitHub 的 Developer settings 中创建 OAuth App：
+   - Homepage URL：`https://xiaobing6-blog.pages.dev/admin/`
+   - Authorization callback URL：`<Worker 地址>/callback`
+3. 在 `workers/cms-auth` 目录中把 OAuth 凭据写入 Worker Secret：
+
+   ```powershell
+   npx wrangler@4.110.0 secret put GITHUB_CLIENT_ID
+   npx wrangler@4.110.0 secret put GITHUB_CLIENT_SECRET
+   ```
+
+4. `wrangler.toml` 已配置：
    - `ALLOWED_DOMAINS=xiaobing6-blog.pages.dev`
-4. 在 `public/admin/config.yml` 的 `backend` 下取消 `base_url` 注释并替换成 Worker 地址。
-5. 提交并推送，Cloudflare Pages 部署完成后即可使用 GitHub 按钮登录。
+   - `ALLOWED_GITHUB_USERS=xiaobing6`
+5. 在 `public/admin/config.yml` 的 `backend` 下加入 Worker 地址和 `auth_methods: [oauth]`。第二项会关闭 Access Token 登录，确保所有远程登录都必须经过账号白名单。
+6. 提交并推送博客配置，Cloudflare Pages 部署完成后使用 GitHub 按钮登录。
 
-Client Secret 只能保存在 Cloudflare Worker 的加密变量里，绝不能写入 `.env` 后提交，也不能发到聊天中。
+Client Secret 只能保存在 Cloudflare Worker Secret 中，绝不能提交到仓库或发送到聊天中。完整命令也记录在 `workers/cms-auth/README.md`。
 
-OAuth 部署的官方步骤：<https://github.com/sveltia/sveltia-cms-auth#how-to-use-it>
+定制代码基于 [Sveltia CMS Authenticator](https://github.com/sveltia/sveltia-cms-auth)，并保留其 MIT License。
 
 ## 内容与图片约定
 
